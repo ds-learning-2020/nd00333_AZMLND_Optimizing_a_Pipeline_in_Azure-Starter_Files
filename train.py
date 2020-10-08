@@ -15,12 +15,8 @@ from azureml.data.dataset_factory import TabularDatasetFactory
 # "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 
 # documentation - https://docs.microsoft.com/en-us/python/api/azureml-core/azureml.data.dataset_factory.tabulardatasetfactory
-ds = Dataset.Tabular.from_delimited_files(path="https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv")
+ds = TabularDatasetFactory.from_delimited_files("https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv")
 
-x, y = clean_data(ds)
-
-# TODO: Split data into train and test sets.
-x_train, x_test , y_train, y_test = train_test_split(x, y, test_size=20, random_state=42)
 
 run = Run.get_context()
 
@@ -49,7 +45,14 @@ def clean_data(data):
     x_df["poutcome"] = x_df.poutcome.apply(lambda s: 1 if s == "success" else 0)
 
     y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
+
+    return x_df, y_df
     
+
+x, y = clean_data(ds)
+
+# TODO: Split data into train and test sets.
+x_train, x_test , y_train, y_test = train_test_split(x, y, test_size=20, random_state=42)
 
 def main():
     # Add arguments to script
@@ -59,6 +62,7 @@ def main():
     parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
 
     args = parser.parse_args()
+    print("test")
 
     run.log("Regularization Strength:", np.float(args.C))
     run.log("Max iterations:", np.int(args.max_iter))
