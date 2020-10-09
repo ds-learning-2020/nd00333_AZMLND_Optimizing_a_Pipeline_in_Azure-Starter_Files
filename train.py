@@ -46,9 +46,10 @@ def clean_data(data):
 
     y_df = x_df.pop("y").apply(lambda s: 1 if s == "yes" else 0)
 
+    # possible bug?
     return x_df, y_df
     
-
+# moved because of annoying red line
 x, y = clean_data(ds)
 
 # TODO: Split data into train and test sets.
